@@ -3,21 +3,31 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { NavLink } from "react-router";
 import useFancybox from './useFancybox';
 import './App.css'
-const imageModules = import.meta.glob("./assets/*.jpg", { eager: true, import: "default" });
 
-const images = Object.entries(imageModules).map(([path, src]) => ({
-  name: path.split("/").pop().split(".")[0],
-  src, // ✅ this is now the resolved URL string, e.g. "/src/assets/ardbeg1-a1b2c3.jpg"
-}));
+const photoModules = import.meta.glob("./assets/photos/*.jpg", { eager: true, import: "default" });
+const thumbModules = import.meta.glob("./assets/thumbnails/*.jpg", { eager: true, import: "default" });
 
-console.log(images);
+const images = Object.entries(photoModules).map(([path, src]) => {
+  const name = path.split("/").pop().split(".")[0];
+
+  // find the matching thumbnail by filename
+  const thumbPath = Object.keys(thumbModules).find((p) =>
+    p.endsWith(`/${name}.jpg`)
+  );
+
+  return {
+    name,
+    src,
+    thumb: thumbPath ? thumbModules[thumbPath] : src, // fallback to full image if no thumb found
+  };
+});
 
 function Navbar() {
   return (
     <header>
       <nav>
         <NavLink to="/" end className={({ isActive }) => isActive ? "active" : ""}>
-          Home
+          Portfolio
         </NavLink>
         <NavLink to="/photography">Photography</NavLink>
       </nav>
@@ -25,12 +35,31 @@ function Navbar() {
   )
 }
 
+function PortfolioItem({src, type, client}) {
+  return (
+      <a href={src} className="portfolioItem" target="_blank">
+        <span className="portfolioItem__type">{type}</span>
+
+        <div className="portfolioItem__client">{client}</div>
+
+        <div className="portfolioItem__arrow"></div>
+      </a>
+  )
+}
+
 function Home() {
   return (
     <>
-      <section className="hero">
-          <h1 className="hero__heading">Zack Cerny</h1>
-          <p className="hero__text">Front-End Web Developer / Photographer</p>
+      <section className="content">
+        <h1 className="mainHeading">Zack Cerny <span className="small">Front-End Web Developer</span></h1>
+        
+        <h2 className="heading">Projects</h2>
+
+        <PortfolioItem src="https://synchronyimpact.com/" type="Impact Report" client="Synchrony" />
+        <PortfolioItem src="https://cr.whirlpoolcorp.com/" type="Corporate Responsibility Resource Center" client="Whirlpool" />
+        <PortfolioItem src="https://reports.sutterhealth.org/annualreport-2025/" type="2025 Annual Report" client="Sutter Health" />
+        <PortfolioItem src="https://content.tdsynnex.com/ccr/fy2025/" type="2025 Corporate Citizenship Report" client="TD Synnex" />
+        <PortfolioItem src="https://www.cisco.com/c/m/en_us/about/purpose/reporting-hub.html" type="Purpose Reporting Hub" client="Cisco" />
       </section>
     </>
   )
@@ -48,8 +77,8 @@ function Photography() {
       <section className="photography">
         <div className="photography__photos" ref={fancyboxRef}>
           {images.map((img) => (
-            <a data-fancybox href={img.src} className="photoThumb">
-              <img src={img.src} alt="" key={img.src} />
+            <a data-fancybox="gallary" href={img.src} key={img.src} className="photoThumb">
+              <img src={img.thumb} alt="" />
             </a>
           ))}
         </div>
