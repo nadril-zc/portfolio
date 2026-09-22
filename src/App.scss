@@ -446,6 +446,11 @@ header {
 	@media screen and ( max-width: 875px ) {
 		flex-wrap: wrap;
 	}
+
+	@media screen and ( max-width: 560px ) {
+		padding-left: 0;
+		padding-right: 20px;
+	}
 }
 
 .portfolioItem__type {
@@ -504,6 +509,10 @@ header {
 		height: 2px;
 		background-color: #fff;
 		transition: all 0.2s ease;
+	}
+
+	@media screen and ( max-width: 560px ) {
+		right: 0;
 	}
 }
 
