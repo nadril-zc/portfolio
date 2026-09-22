@@ -429,18 +429,20 @@ header {
 		transition: all 0.3s ease;
 	}
 
-	&:hover {
-		color: #0B0B0A;
-		text-shadow: none;
+	@media screen and ( min-width: 561px ) {
+		&:hover {
+			color: #0B0B0A;
+			text-shadow: none;
 
-		.portfolioItem__type { font-weight: 800; }
+			.portfolioItem__type { font-weight: 800; }
 
-		&::before {
-			transform: translateX(0);
+			&::before {
+				transform: translateX(0);
+			}
+
+			.portfolioItem__arrow::before,
+			.portfolioItem__arrow::after { background-color: #0B0B0A; }
 		}
-
-		.portfolioItem__arrow::before,
-		.portfolioItem__arrow::after { background-color: #0B0B0A; }
 	}
 
 	@media screen and ( max-width: 875px ) {
